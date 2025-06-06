@@ -86,7 +86,7 @@ export const BuyButton = ({ product }: { product: Product }) => {
     };
 
     return currentItem ? (
-        <div className="d-flex align-items-center" style={{ gap: '0.5rem' }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ gap: '0.5rem' }}>
             <button
                 className="btn btn-outline-danger"
                 onClick={decrementQuantity}
@@ -115,7 +115,7 @@ export const BuyButton = ({ product }: { product: Product }) => {
         </div>
     ) : (
         <button
-            className="btn btn-primary"
+            className="btn btn-secondary w-100"
             onClick={handleAddToCart}
             aria-label={`Добавить ${product.title} в корзину`}
         >

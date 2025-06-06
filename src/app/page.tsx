@@ -7,20 +7,17 @@ import {useState} from "react";
 import {CartSummary} from "@/src/components/CardSummary";
 import {OrderForm} from "@/src/components/OrderForm";
 import {Popup} from "@/src/components/Popup";
-import {useProducts} from "@/src/hooks/useProduct";
-
 
 export default function Home() {
     const [showSuccess, setShowSuccess] = useState(false);
-    const { products } = useProducts();
   return (
-      <main className="container mx-auto px-4 py-8" style={{backgroundColor:'#222222'}}>
-          <h2 className="text-center my-3 text-secondary">Тестовое задание</h2>
+      <main className="container mx-auto px-4 pt-2">
+          <h2 className="text-center mt-3 pt-2 text-secondary">Тестовое задание</h2>
           <section className={'md-10'}>
               <ReviewsList/>
           </section>
-          <div className="col-md-4 mx-auto card p-2">
-              <CartSummary products={products} />
+          <div className="col-sm-12 col-md-6  mx-auto card p-2">
+              <CartSummary />
               <OrderForm onSuccess={() => setShowSuccess(true)} />
           </div>
           {showSuccess && (
