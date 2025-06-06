@@ -1,36 +1,27 @@
 'use client';
-import { useCart } from "@/src/hooks/useCart";
+
+import {useSelector} from "react-redux";
+import {RootState} from "@/src/store/store";
 
 
-export const CartSummary = ({ products }: { products: Product[] }) => {
-    const { cart } = useCart();
-
-    const cartItems = cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        return {
-            ...item,
-            name: product?.title || 'Неизвестный товар',
-            price: product?.price || 0,
-            itemTotal: (product?.price || 0) * item.quantity
-        };
-    });
-
+export const CartSummary = () => {
+    const cart = useSelector((state: RootState) => state.cart.items);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.itemTotal, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
 
     return (
-        <div className="card mb-4 mx-auto">
+
             <div className="card-body">
                 <h5 className="card-title">Корзина</h5>
                 <div className="mb-3">
-                    {cartItems.map(item => (
+                    {cart.map(item => (
                         <div key={item.id} className="d-flex justify-content-between mb-2">
                             <div>
                                 <span className="fw-medium">{item.name}</span>
                                 <span className="text-muted ms-2">x{item.quantity}</span>
                             </div>
                             <div>
-                                {(item.itemTotal).toLocaleString()} ₽
+                                {(item.price*item.quantity).toLocaleString()} ₽
                             </div>
                         </div>
                     ))}
@@ -47,6 +38,6 @@ export const CartSummary = ({ products }: { products: Product[] }) => {
                     </div>
                 </div>
             </div>
-        </div>
+
     );
 };

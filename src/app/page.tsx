@@ -19,7 +19,7 @@ export default function Home() {
           <section className={'md-10'}>
               <ReviewsList/>
           </section>
-          <div className="col-md-4">
+          <div className="col-md-4 mx-auto card p-2">
               <CartSummary products={products} />
               <OrderForm onSuccess={() => setShowSuccess(true)} />
           </div>

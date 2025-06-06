@@ -1,10 +1,13 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import {useCart} from "@/src/hooks/useCart";
+import {clearCart} from "@/src/store/CartSlice";
+import {useDispatch, useSelector} from "react-redux";
+import { RootState } from '../store/store';
 
 export const OrderForm = ({ onSuccess }: { onSuccess: () => void }) => {
-    const { cart } = useCart();
+    const dispatch = useDispatch();
+    const cart = useSelector((state: RootState) => state.cart.items);
     const [phone, setPhone] = useState('');
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,21 +36,22 @@ export const OrderForm = ({ onSuccess }: { onSuccess: () => void }) => {
             });
 
             if (response.data.success) {
-                localStorage.removeItem('cart');
+                dispatch(clearCart()); // Очищаем корзину через Redux
                 onSuccess();
             } else {
                 setError(response.data.error || 'Ошибка при оформлении заказа');
             }
         } catch (err) {
             setError('Ошибка при отправке заказа');
+            console.error(err);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className={`mb-3 ${error ? 'has-error' : ''}`}>
+        <form onSubmit={handleSubmit} className={'row align-items-center justify-content-between card-body'}>
+            <div className={`mb-3 ${error ? 'has-error' : ''} col-8`}>
                 <label htmlFor="phone" className="form-label">Телефон</label>
                 <input
                     aria-placeholder="+7 (999) 999-99-99"
@@ -61,7 +65,7 @@ export const OrderForm = ({ onSuccess }: { onSuccess: () => void }) => {
             </div>
             <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-secondary col-4 mt-3"
                 disabled={isSubmitting}
             >
                 {isSubmitting ? 'Отправка...' : 'Заказать'}

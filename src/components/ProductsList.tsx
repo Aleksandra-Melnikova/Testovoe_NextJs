@@ -60,7 +60,7 @@ export const ProductList = () => {
     return (
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 p-3 rounded-2 g-4 mx-auto">
             {products.map(product => (
-                <div key={product.id} className="col mx-auto justify-content-center">
+                <div key={product.id + product.title} className="col mx-auto justify-content-center">
                     <ProductItem product={product} />
                 </div>
             ))}

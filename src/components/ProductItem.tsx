@@ -1,3 +1,4 @@
+'use client';
 import {BuyButton} from "@/src/components/BuyButton";
 
 export const ProductItem = ({ product }: { product: Product }) => {
@@ -15,7 +16,7 @@ export const ProductItem = ({ product }: { product: Product }) => {
                 <p className="card-text text-muted mb-3">{product.description}</p>
             </div>
             <div className="h5 fw-bold mt-auto text-center">Цена: {product.price.toLocaleString()} ₽</div>
-            <BuyButton productId={product.id}/>
+            <BuyButton product={product}/>
         </div>
     );
 };
