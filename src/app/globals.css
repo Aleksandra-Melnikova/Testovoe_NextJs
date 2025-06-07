@@ -1,0 +1,12 @@
+
+:root {
+    --bs-primary: #222222;
+    --bs-secondary: #D9D9D9;
+    --bs-body-bg: #777777;
+}
+
+.mask-phone::placeholder {
+    color: white;
+    opacity: 1;
+}
+

@@ -19,15 +19,14 @@ export const ReviewsList = () => {
 
     return (
         <div className="container mt-5 pt-2">
-            <div className="row mx-auto justify-content-around">
+            <div className="row mx-auto justify-content-center">
                 {reviews.map((review) => (
                     <div
-                        className="col-md-6 col-lg-4 mb-4 card g-3 h-100 p-4 flex-column justify-content-start"
+                        className="col-md-6 col-lg-4 mb-4 card mx-3 h-100 p-4 flex-column justify-content-start rounded-2"
                         style={{
                             width: '321px',
                             minHeight: '300px',
-                            backgroundColor: '#F8F9FA',
-                            borderRadius: '12px',
+                            backgroundColor: 'var(--bs-secondary)',
                             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
                         }}
                         key={review.id}
@@ -51,23 +50,6 @@ export const ReviewsList = () => {
                                     .replace(/<li>/g, '<li style="margin-bottom: 0.5rem;">')
                             }}
                         />
-
-                        <style jsx>{`
-      .review-content :global(p:last-child) {
-        margin-bottom: 0;
-      }
-      .review-content :global(a) {
-        color: #4361ee;
-        text-decoration: underline;
-      }
-      .review-content :global(blockquote) {
-        border-left: 3px solid #4361ee;
-        padding-left: 1rem;
-        margin-left: 0;
-        color: #6c757d;
-        font-style: italic;
-      }
-    `}</style>
                     </div>
                 ))}
             </div>

@@ -11,8 +11,8 @@ export const CartSummary = () => {
     return (
 
             <div className="card-body">
-                <h5 className="card-title">Корзина</h5>
-                <div className="mb-3">
+                <h3 className="card-title fw-medium">Добавленные товары</h3>
+                <div className="mb-1">
                     {cart.map(item => (
                         <div key={item.id} className="d-flex justify-content-between mb-2">
                             <div>

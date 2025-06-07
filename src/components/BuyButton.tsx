@@ -86,9 +86,10 @@ export const BuyButton = ({ product }: { product: Product }) => {
     };
 
     return currentItem ? (
-        <div className="d-flex align-items-center justify-content-center" style={{ gap: '0.5rem' }}>
+        <div className="d-flex align-items-center justify-content-center w-auto" style={{ gap: '0.5rem' }}>
             <button
-                className="btn btn-outline-danger"
+                className="btn"
+                style={{backgroundColor: 'var(--bs-primary)', color: 'white'}}
                 onClick={decrementQuantity}
                 aria-label="Уменьшить количество"
             >
@@ -102,11 +103,12 @@ export const BuyButton = ({ product }: { product: Product }) => {
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={handleBlur}
                 className="form-control text-center"
-                style={{ width: '60px' }}
+                style={{backgroundColor: 'var(--bs-primary)', color: 'white'}}
                 aria-label="Количество товара"
             />
             <button
-                className="btn btn-outline-success"
+                className="btn"
+                style={{backgroundColor: 'var(--bs-primary)', color: 'white'}}
                 onClick={incrementQuantity}
                 aria-label="Увеличить количество"
             >
@@ -115,7 +117,8 @@ export const BuyButton = ({ product }: { product: Product }) => {
         </div>
     ) : (
         <button
-            className="btn btn-secondary w-100"
+            className="btn w-100"
+            style={{backgroundColor: 'var(--bs-primary)', color: 'white'}}
             onClick={handleAddToCart}
             aria-label={`Добавить ${product.title} в корзину`}
         >
