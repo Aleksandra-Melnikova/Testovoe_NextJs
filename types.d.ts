@@ -5,3 +5,10 @@ interface Product {
     description: string;
     price: number;
 }
+
+interface ApiProductResponse {
+    page: number;
+    amount: number;
+    total: number;
+    items: Product[];
+}

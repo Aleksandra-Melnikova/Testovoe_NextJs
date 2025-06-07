@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import {addToCart, removeFromCart, updateQuantity} from "@/src/store/CartSlice";
+import {addToCart, removeFromCart, updateQuantity} from "@/src/store/slices/CartSlice";
 
 interface Product {
     id: number;

@@ -2,7 +2,7 @@
 
 export const Popup = ({ onClose }: { onClose: () => void }) => {
     return (
-        <div className="modal show bg-white" style={{ display: 'block' }}>
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">

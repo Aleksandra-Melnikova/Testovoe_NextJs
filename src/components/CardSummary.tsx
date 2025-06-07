@@ -1,11 +1,10 @@
 'use client';
 
-import {useSelector} from "react-redux";
-import {RootState} from "@/src/store/store";
-
+import {useAppSelector} from "@/src/store/hooks";
+import {selectCartItems} from "@/src/store/slices/CartSlice";
 
 export const CartSummary = () => {
-    const cart = useSelector((state: RootState) => state.cart.items);
+    const cart = useAppSelector(selectCartItems);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + item.price*item.quantity, 0);
 

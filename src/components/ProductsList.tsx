@@ -1,77 +1,82 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import {ProductItem} from "@/src/components/ProductItem";
-
-interface ApiResponse {
-    page: number;
-    amount: number;
-    total: number;
-    items: Product[];
-}
+import { useEffect, useRef, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/src/store/hooks';
+import { ProductItem } from "@/src/components/ProductItem";
+import { fetchProducts } from "@/src/store/thunks/ProductThunk";
+import {
+    selectHasMoreProducts,
+    selectLoadingProducts,
+    selectProductItems,
+    selectProductsPage
+} from "@/src/store/slices/ProductSlice";
 
 export const ProductList = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
+    const dispatch = useAppDispatch();
+    const items = useAppSelector(selectProductItems);
+    const hasMore = useAppSelector(selectHasMoreProducts);
+    const loading = useAppSelector(selectLoadingProducts);
+    const currentPage = useAppSelector(selectProductsPage);
     const loaderRef = useRef<HTMLDivElement>(null);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+
+    const loadMoreProducts = useCallback(() => {
+        if (hasMore && !loading) {
+            dispatch(fetchProducts(currentPage));
+        }
+    }, [dispatch, hasMore, loading, currentPage]);
 
     useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                const res = await axios.get<ApiResponse>(
-                    `http://o-complex.com:1337/products?page=${page}&page_size=20`
-                );
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+        }
 
-                if (res.data.items.length === 0) {
-                    setHasMore(false);
-                    return;
-                }
-
-                setProducts(prev => [...prev, ...res.data.items]);
-            } catch (error) {
-                console.error('Ошибка загрузки товаров:', error);
-            }
+        const options = {
+            root: null,
+            rootMargin: '300px',
+            threshold: 0.1
         };
 
-        if (hasMore) {
-            void loadProducts();
+        observerRef.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadMoreProducts();
+            }
+        }, options);
+
+        if (loaderRef.current && hasMore) {
+            observerRef.current.observe(loaderRef.current);
         }
-    }, [page, hasMore]);
 
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+            }
+        };
+    }, [loadMoreProducts, hasMore]);
 
+    // Первоначальная загрузка
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setPage(prev => prev + 1);
-                }
-            },
-            { threshold: 0.1 }
-        );
-
-        if (loaderRef.current) observer.observe(loaderRef.current);
-
-        return () => observer.disconnect();
-    }, [hasMore]);
-
+        if (items.length === 0 && !loading) {
+            loadMoreProducts();
+        }
+    }, [items.length, loading, loadMoreProducts]);
 
     return (
         <div className="row flex-wrap p-3 g-3 rounded-2 g-4 mx-auto">
-            {products.map(product => (
-                <div key={product.id + product.title} className="col mx-auto justify-content-center">
+            {items.map(product => (
+                <div key={`${product.id}-${product.title} + ${Math.floor(Math.random() * 100) + 1}`} className="col mx-auto justify-content-center">
                     <ProductItem product={product} />
                 </div>
             ))}
             {hasMore && (
-                <div ref={loaderRef} className="col-12 py-4">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
+                <div ref={loaderRef} className="col-12 py-4 text-center">
+                    {loading && (
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
     );
 };
-

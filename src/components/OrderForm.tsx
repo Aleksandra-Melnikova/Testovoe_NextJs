@@ -1,74 +1,78 @@
 'use client';
+
 import React, { useState } from 'react';
-import axios from 'axios';
-import {clearCart} from "@/src/store/CartSlice";
-import {useDispatch, useSelector} from "react-redux";
-import { RootState } from '../store/store';
+import {useAppDispatch, useAppSelector} from "@/src/store/hooks";
+import {clearCart, selectCartItems, selectLoadingSubmit, selectSubmitError} from "@/src/store/slices/CartSlice";
+import {submitOrder} from "@/src/store/thunks/CartThunk";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const OrderForm = ({ onSuccess }: { onSuccess: () => void }) => {
-    const dispatch = useDispatch();
-    const cart = useSelector((state: RootState) => state.cart.items);
+    const dispatch = useAppDispatch();
+    const cart = useAppSelector(selectCartItems);
+    const submitLoading = useAppSelector(selectLoadingSubmit);
+    const submitError = useAppSelector(selectSubmitError);
+    const [error, setError] = useState<string | null>(null);
+
     const [phone, setPhone] = useState('');
-    const [error, setError] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null); // Сбрасываем ошибку при новой попытке отправки
 
         const cleanPhone = phone.replace(/\D/g, '');
         if (cleanPhone.length !== 11) {
-            setError('Введите полный номер телефона');
+            setError('Введите корректный номер телефона');
             return;
         }
 
         if (cart.length === 0) {
-            setError('Добавьте товары в корзину');
+           toast.error('Добавьте товары в корзину')
             return;
         }
 
-        setIsSubmitting(true);
-        setError('');
-
         try {
-            const response = await axios.post('http://o-complex.com:1337/order', {
+            const resultAction = await dispatch(submitOrder({
                 phone: cleanPhone,
                 cart: cart.map(item => ({ id: item.id, quantity: item.quantity }))
-            });
+            }));
 
-            if (response.data.success) {
-                dispatch(clearCart()); // Очищаем корзину через Redux
+            if (submitOrder.fulfilled.match(resultAction)) {
+                dispatch(clearCart());
                 onSuccess();
-            } else {
-                setError(response.data.error || 'Ошибка при оформлении заказа');
             }
         } catch (err) {
-            setError('Ошибка при отправке заказа');
-            console.error(err);
-        } finally {
-            setIsSubmitting(false);
+            console.log(err);
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className={'row align-items-center justify-content-between card-body'}>
-            <div className={`mb-3 ${error ? 'has-error' : ''} col-8`}>
+            <div className={`mb-3 ${submitError || error ? 'has-error' : ''} col-8`}>
                 <label htmlFor="phone" className="form-label">Телефон</label>
                 <input
                     aria-placeholder="+7 (999) 999-99-99"
-                    className={`form-control ${error ? 'is-invalid' : ''}`}
+                    className={`form-control ${submitError || error ? 'is-invalid' : ''}`}
                     id="phone"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                        setPhone(e.target.value);
+                        setError(null); // Сбрасываем ошибку при изменении телефона
+                    }}
                     placeholder="+7 (___) ___-__-__"
                 />
-                {error && <div className="invalid-feedback">{error}</div>}
+                {(submitError || error) && (
+                    <div className="invalid-feedback">
+                        {submitError || error}
+                    </div>
+                )}
             </div>
             <button
                 type="submit"
                 className="btn btn-secondary col-4 mt-3"
-                disabled={isSubmitting}
+                disabled={submitLoading}
             >
-                {isSubmitting ? 'Отправка...' : 'Заказать'}
+                {submitLoading ? 'Отправка...' : 'Заказать'}
             </button>
         </form>
     );

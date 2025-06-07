@@ -7,6 +7,7 @@ import {useState} from "react";
 import {CartSummary} from "@/src/components/CardSummary";
 import {OrderForm} from "@/src/components/OrderForm";
 import {Popup} from "@/src/components/Popup";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
     const [showSuccess, setShowSuccess] = useState(false);
@@ -21,9 +22,10 @@ export default function Home() {
               <OrderForm onSuccess={() => setShowSuccess(true)} />
           </div>
           {showSuccess && (
-              <div className="modal-backdrop show">
+              <>
+                  <div className="modal-backdrop fade show"></div>
                   <Popup onClose={() => setShowSuccess(false)} />
-              </div>)}
+              </>)}
         <ProductList />
       </main>
   );
