@@ -58,7 +58,6 @@ export const OrderForm = ({ onSuccess }: { onSuccess: () => void }) => {
             }));
 
             if (submitOrder.fulfilled.match(resultAction)) {
-                // Очищаем сохраненный номер после успешного заказа
                 localStorage.removeItem('orderPhone');
                 dispatch(clearCart());
                 onSuccess();
