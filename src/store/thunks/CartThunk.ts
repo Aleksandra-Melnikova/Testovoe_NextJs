@@ -16,7 +16,8 @@ export const submitOrder = createAsyncThunk(
             } else {
                 return rejectWithValue(response.data.error || 'Ошибка при оформлении заказа');
             }
-        } catch (err) {
+        } catch (error) {
+            console.log(error);
             return rejectWithValue('Ошибка при отправке заказа');
         }
     }

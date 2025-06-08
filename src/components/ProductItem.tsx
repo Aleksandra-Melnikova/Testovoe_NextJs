@@ -1,26 +1,43 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import { BuyButton } from "@/src/components/BuyButton";
 
-export const ProductItem = ({ product }: { product: Product }) => {
+interface Product {
+    id: number;
+    title: string;
+    price: number;
+    image_url?: string;
+    description?: string;
+}
+
+const ProductItem = React.memo(function ProductItem({ product }: { product: Product }) {
     const [imageError, setImageError] = useState(false);
 
     const handleImageError = () => {
         setImageError(true);
-    }
+    };
+
+    const fallbackImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTWi0JscCs7xkjwsTCoRzZ0zZTWtxb7CI1ZA&s';
+    const imageSrc = imageError ? fallbackImage : product.image_url || fallbackImage;
 
     return (
-        <div className="card rounded-3 flex-column mx-auto overflow-hidden mt-2 d-flex flex-column"
-             style={{
-                 maxWidth: '321px',
-                 minWidth: '300px',
-                 height: '420px',
-                 backgroundColor: '#D9D9D9'
-             }}>
+        <div
+            className="card rounded-3 flex-column mx-auto overflow-hidden mt-2 d-flex flex-column"
+            style={{
+                maxWidth: '321px',
+                minWidth: '300px',
+                minHeight: '460px',
+                height: 'auto',
+                backgroundColor: '#D9D9D9'
+            }}
+        >
             <div style={{ flex: '0 0 auto' }}>
-                <img
-                    src={imageError ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTWi0JscCs7xkjwsTCoRzZ0zZTWtxb7CI1ZA&s' : product.image_url}
+                <Image
+                    src={imageSrc}
                     alt={product.title}
+                    width={300}
+                    height={200}
                     className="card-img-top img-fluid mt-2 rounded-2 mx-auto d-block"
                     style={{
                         minHeight: '200px',
@@ -29,6 +46,7 @@ export const ProductItem = ({ product }: { product: Product }) => {
                         objectFit: 'contain'
                     }}
                     onError={handleImageError}
+                    unoptimized={true}
                 />
             </div>
 
@@ -45,4 +63,8 @@ export const ProductItem = ({ product }: { product: Product }) => {
             </div>
         </div>
     );
-};
+});
+
+ProductItem.displayName = 'ProductItem';
+
+export { ProductItem };

@@ -54,7 +54,6 @@ export const ProductList = () => {
         };
     }, [loadMoreProducts, hasMore]);
 
-    // Первоначальная загрузка
     useEffect(() => {
         if (items.length === 0 && !loading) {
             loadMoreProducts();
@@ -62,9 +61,9 @@ export const ProductList = () => {
     }, [items.length, loading, loadMoreProducts]);
 
     return (
-        <div className="row flex-wrap p-3 g-3 rounded-2 g-4 mx-auto">
+        <div className="row flex-wrap g-3 rounded-2 mx-auto">
             {items.map(product => (
-                <div key={`${product.id}-${product.title} + ${Math.floor(Math.random() * 100) + 1}`} className="col mx-auto justify-content-center">
+                <div key={`${product.id}-${product.title} + ${Math.floor(Math.random() * 10000) + 1}`} className="col mx-auto justify-content-center">
                     <ProductItem product={product} />
                 </div>
             ))}

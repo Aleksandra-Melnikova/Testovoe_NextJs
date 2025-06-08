@@ -1,6 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 import {fetchReviews} from "@/src/store/thunks/RewiewThunk";
+import {RootState} from "@/src/store/store";
 
 
 interface Review {
@@ -19,6 +20,10 @@ const initialState: ReviewsState = {
     loading: false,
     error: null,
 };
+
+export const selectReviewItems = (state: RootState) => state.reviews.items;
+export const selectLoadingReview = (state: RootState) => state.reviews.loading;
+export const selectReviewError = (state: RootState) => state.reviews.error;
 
 const reviewsSlice = createSlice({
     name: 'reviews',
